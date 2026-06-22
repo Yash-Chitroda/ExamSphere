@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CBOES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        body{
+            margin:0;
+            font-family:"Segoe UI",Tahoma,sans-serif;
+            background:linear-gradient(135deg,#1d2671,#c33764);
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        .container{
+            margin-top: 100px;
+            width:380px;
+            background:#fff;
+            padding:10px 25px 25px 25px;
+            border-radius:12px;
+            box-shadow:0 12px 30px rgba(0,0,0,0.2);
+            text-align:center;
+        }
+
+        h2{
+            margin-bottom:20px;
+        }
+
+        input, select{
+            width:100%;
+            padding:12px;
+            margin-bottom:12px;
+            border:1px solid #ccc;
+            border-radius:6px;
+            font-size:14px;
+        }
+        input{
+            width: 355px;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:6px;
+            background:#1a73e8;
+            color:white;
+            font-size:15px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#1558b0;
+        }
+
+        .link{
+            margin-top:15px;
+        }
+
+        .link a{
+            text-decoration:none;
+            color:#1a73e8;
+            font-weight:500;
+        }
+
+        .error{
+            color:red;
+            margin-bottom:10px;
+        }
+
+        .password-field{
+            position: relative;
+        }
+
+        .password-field input{
+            width: 355px;
+            /* padding-right: 40px; */
+        }
+
+        .toggle-eye{
+            position: absolute;
+            right: 12px;
+            top: 38%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .title-banner{
+            position:absolute;
+            top:60px;
+            width:100%;
+            text-align:center;
+            font-family:'Orbitron', sans-serif;
+        }
+
+        .title-banner span{
+            display:inline-block;
+            font-size:42px;
+            font-weight:700;
+            letter-spacing:2px;
+            opacity:0;
+        }
+
+        /* EXAMSPHERE */
+
+        .title-exam{
+            background: linear-gradient(45deg,#ffffff,#9be7ff);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideLeft 1.2s ease forwards;
+        }
+
+        /* SMARTEXAM */
+
+        .title-smart{
+            background: linear-gradient(45deg,#ffd700,#ff9800);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            margin:0 8px;
+            animation: slideTop 1.2s ease forwards;
+        }
+
+        /* CLOUD SYSTEM */
+
+        .title-cloud{
+            background: linear-gradient(45deg,#00e5ff,#00bcd4);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideRight 1.2s ease forwards;
+        }
+
+        /* UNDERLINE */
+
+        .title-underline{
+            width:0;
+            height:4px;
+            margin:12px auto;
+            background:linear-gradient(90deg,#00e5ff,#c33764,#ffd700);
+            border-radius:10px;
+            animation: underlineGrow 1.6s ease forwards;
+        }
+
+        /* ANIMATIONS */
+
+        @keyframes slideLeft{
+            from{
+                transform:translateX(-500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideRight{
+            from{
+                transform:translateX(500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideTop{
+            from{
+                transform:translateY(-200px);
+                opacity:0;
+            }
+            to{
+                transform:translateY(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes underlineGrow{
+            from{
+                width:0;
+                opacity:0;
+            }
+            to{
+                width:800px;
+                opacity:1;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="title-banner">
+        <span class="title-exam">
+            CloudBased
+        </span>
+        <span class="title-smart">
+        - Online Examination -
+        </span>
+        <span class="title-cloud">
+            System
+        </span>
+        <div class="title-underline"></div>
+    </div>
+    <div class="container">
+    <h2>Register</h2>
+    {% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+    {% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <div class="password-field">
+            <input type="password" name="password" id="password" placeholder="Password" required>
+            <span class="toggle-eye" onclick="togglePassword('password', this)">🫣</span>
+        </div>
+        <div class="password-field">
+            <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
+            <span class="toggle-eye" onclick="togglePassword('confirm_password', this)">🫣</span>
+        </div>
+        <select name="role" required>
+        <option value="">Select Role</option>
+        <option value="student">Student 🧑‍🎓</option>
+        <option value="examiner">Examiner 🧑‍💼</option>
+        </select>
+        <select name="subject" id="subjectField" style="display:none;">
+            <option value="">Select Subject</option>
+            {% for domain in domains %}
+                <option value="{{ domain.name }}">{{ domain.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Register</button>
+    </form>
+
+    <div class="link">
+        Already have an account?<br>
+        <a href="{% url 'login' %}">Login here</a>
+    </div>
+    </div>
+    <script>
+        const roleSelect = document.querySelector("select[name='role']");
+        const subjectField = document.getElementById("subjectField");
+        roleSelect.addEventListener("change", function(){
+            if(this.value === "examiner"){
+                subjectField.style.display = "block";
+            }
+            else{
+                subjectField.style.display = "none";
+            }
+        });
+
+        function togglePassword(fieldId, icon){
+            const input = document.getElementById(fieldId)
+            if(input.type === "password"){
+                input.type = "text"
+                icon.innerHTML = "👀"
+            }
+            else{
+                input.type = "password"
+                icon.innerHTML = "🫣"
+            }
+        }
+    </script>
+</body>
+</html>

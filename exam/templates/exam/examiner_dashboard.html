@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CBOES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 100px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        }
+
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            margin: 0;
+            color: #1d2671;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .create-exam-btn {
+            background: #007bff;
+        }
+
+        .admin-btn {
+            background: linear-gradient(135deg, #1d2671, #c33764);
+        }
+
+        .export-btn {
+            background: #28a745;
+        }
+
+        .analytics-btn {
+            background: #ff9800;
+        }
+
+        /* NEW */
+        .descriptive-btn {
+            background: #6f42c1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        th {
+            background: #f4f6ff;
+        }
+
+        tr:hover {
+            background: #f9f9ff;
+        }
+
+        .logout {
+            margin-top: 25px;
+            display: inline-block;
+            color: #c33764;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .tag {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .mcq {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+
+        .desc {
+            background: #f3e5f5;
+            color: #4a148c;
+        }
+
+        .title-banner{
+            position:absolute;
+            top:30px;
+            width:100%;
+            text-align:center;
+            font-family:'Orbitron', sans-serif;
+        }
+
+        .title-banner span{
+            display:inline-block;
+            font-size:20px;
+            font-weight:700;
+            letter-spacing:2px;
+            opacity:0;
+        }
+
+        /* EXAMSPHERE */
+
+        .title-exam{
+            background: linear-gradient(45deg,#ffffff,#9be7ff);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideLeft 1.2s ease forwards;
+        }
+
+        /* SMARTEXAM */
+
+        .title-smart{
+            background: linear-gradient(45deg,#ffd700,#ff9800);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            margin:0 8px;
+            animation: slideTop 1.2s ease forwards;
+        }
+
+        /* CLOUD SYSTEM */
+
+        .title-cloud{
+            background: linear-gradient(45deg,#00e5ff,#00bcd4);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideRight 1.2s ease forwards;
+        }
+
+        /* UNDERLINE */
+
+        .title-underline{
+            width:0;
+            height:4px;
+            margin:12px auto;
+            background:linear-gradient(90deg,#00e5ff,#c33764,#ffd700);
+            border-radius:10px;
+            animation: underlineGrow 1.6s ease forwards;
+        }
+
+        /* ANIMATIONS */
+
+        @keyframes slideLeft{
+            from{
+                transform:translateX(-500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideRight{
+            from{
+                transform:translateX(500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideTop{
+            from{
+                transform:translateY(-200px);
+                opacity:0;
+            }
+            to{
+                transform:translateY(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes underlineGrow{
+            from{
+                width:0;
+                opacity:0;
+            }
+            to{
+                width:420px;
+                opacity:1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title-banner">
+        <span class="title-exam">
+            CloudBased
+        </span>
+        <span class="title-smart">
+        - Online Examination -
+        </span>
+        <span class="title-cloud">
+            System
+        </span>
+        <div class="title-underline"></div>
+    </div>
+    <div class="container">
+
+        <div class="header">
+            <h2>Examiner Dashboard</h2>
+
+            <div>
+                <a href="{% url 'create_exam' %}" class="btn create-exam-btn">Create Exam</a>
+                <a href="/admin/" class="btn admin-btn" target="_blank">Admin Panel</a>
+                <a href="{% url 'export_results_csv' %}" class="btn export-btn">Export Results</a>
+                
+                <a href="{% url 'examiner_descriptive_submissions' %}"class="btn descriptive-btn">Evaluate Descriptive Exams</a>
+            </div>
+        </div>
+
+        <table>
+            <tr>
+                <th>Student</th>
+                <th>Exam</th>
+                <th>Type</th>
+                <th>Score</th>
+                <th>Total</th>
+                <th>Date</th>
+            </tr>
+
+            {% for r in results %}
+            <tr>
+                <td>
+                    {% if r.exam.exam_type == 'MCQ' %}
+                        <a href="{% url 'examiner_view_answers' r.id %}">
+                            {{ r.user.username }}
+                        </a>
+                    {% else %}
+                        {{ r.user.username }}
+                    {% endif %}
+                </td>
+
+                <td>{{ r.exam.domain.name }}</td>
+
+                <td>
+                    {% if r.exam.exam_type == 'MCQ' %}
+                        <span class="tag mcq">MCQ</span>
+                    {% else %}
+                        <span class="tag desc">Descriptive</span>
+                    {% endif %}
+                </td>
+
+                <td>{{ r.score }}</td>
+
+                <!-- ✅ FIXED TOTAL -->
+                <td>
+                    {% if r.exam.exam_type == "DESCRIPTIVE" %}
+                        {{ r.exam.total_questions|add:r.exam.total_questions|add:r.exam.total_questions|add:r.exam.total_questions|add:r.exam.total_questions|add:r.exam.total_questions|add:r.exam.total_questions|add:r.exam.total_questions|add:r.exam.total_questions|add:r.exam.total_questions }}
+                    {% else %}
+                        {{ r.exam.total_questions }}
+                    {% endif %}
+                </td>
+
+                <td>{{ r.submitted_at|date:"d M Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No exam results yet.</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <a href="{% url 'login' %}" class="logout">Logout</a>
+
+    </div>
+
+</body>
+</html>

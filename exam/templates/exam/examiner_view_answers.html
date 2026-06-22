@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CBOES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        }
+
+        h2 {
+            color: #1d2671;
+            margin-top: 0;
+        }
+
+        .meta {
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .question-box {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fc;
+            border-left: 6px solid #1d2671;
+            border-radius: 8px;
+        }
+
+        .options {
+            margin-top: 10px;
+        }
+
+        .option {
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .correct {
+            background: #e6ffed;
+            border-color: #28a745;
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .wrong {
+            background: #ffe6e6;
+            border-color: #dc3545;
+            color: #721c24;
+            font-weight: bold;
+        }
+
+        .selected {
+            border-style: dashed;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        .title-banner{
+            position:absolute;
+            top:60px;
+            width:100%;
+            text-align:center;
+            font-family:'Orbitron', sans-serif;
+        }
+
+        .title-banner span{
+            display:inline-block;
+            font-size:42px;
+            font-weight:700;
+            letter-spacing:2px;
+            opacity:0;
+        }
+
+        /* EXAMSPHERE */
+
+        .title-exam{
+            background: linear-gradient(45deg,#ffffff,#9be7ff);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideLeft 1.2s ease forwards;
+        }
+
+        /* SMARTEXAM */
+
+        .title-smart{
+            background: linear-gradient(45deg,#ffd700,#ff9800);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            margin:0 8px;
+            animation: slideTop 1.2s ease forwards;
+        }
+
+        /* CLOUD SYSTEM */
+
+        .title-cloud{
+            background: linear-gradient(45deg,#00e5ff,#00bcd4);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideRight 1.2s ease forwards;
+        }
+
+        /* UNDERLINE */
+
+        .title-underline{
+            width:0;
+            height:4px;
+            margin:12px auto;
+            background:linear-gradient(90deg,#00e5ff,#c33764,#ffd700);
+            border-radius:10px;
+            animation: underlineGrow 1.6s ease forwards;
+        }
+
+        /* ANIMATIONS */
+
+        @keyframes slideLeft{
+            from{
+                transform:translateX(-500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideRight{
+            from{
+                transform:translateX(500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideTop{
+            from{
+                transform:translateY(-200px);
+                opacity:0;
+            }
+            to{
+                transform:translateY(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes underlineGrow{
+            from{
+                width:0;
+                opacity:0;
+            }
+            to{
+                width:420px;
+                opacity:1;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="title-banner">
+    <span class="title-exam">
+        CloudBased
+    </span>
+    <span class="title-smart">
+       - Online Examination -
+    </span>
+    <span class="title-cloud">
+        System
+    </span>
+    <div class="title-underline"></div>
+</div>
+<div class="container">
+
+    <h2>Exam Attempt Details</h2>
+
+    <div class="meta">
+        <b>Student:</b> {{ result.user.username }} <br>
+        <b>Exam:</b> {{ result.exam.domain.name }} <br>
+        <b>Score:</b> {{ result.score }} / {{ result.total_questions }}
+    </div>
+
+    {% for a in answers %}
+        <div class="question-box">
+            <p><b>Q{{ forloop.counter }}. {{ a.question.question_text }}</b></p>
+
+            <div class="options">
+
+                <div class="option 
+                    {% if a.question.correct_option == 1 %}correct{% endif %}
+                    {% if a.selected_option == 1 and not a.is_correct %} wrong selected{% endif %}
+                ">
+                    A. {{ a.question.option1 }}
+                </div>
+
+                <div class="option 
+                    {% if a.question.correct_option == 2 %}correct{% endif %}
+                    {% if a.selected_option == 2 and not a.is_correct %} wrong selected{% endif %}
+                ">
+                    B. {{ a.question.option2 }}
+                </div>
+
+                <div class="option 
+                    {% if a.question.correct_option == 3 %}correct{% endif %}
+                    {% if a.selected_option == 3 and not a.is_correct %} wrong selected{% endif %}
+                ">
+                    C. {{ a.question.option3 }}
+                </div>
+
+                <div class="option 
+                    {% if a.question.correct_option == 4 %}correct{% endif %}
+                    {% if a.selected_option == 4 and not a.is_correct %} wrong selected{% endif %}
+                ">
+                    D. {{ a.question.option4 }}
+                </div>
+
+            </div>
+        </div>
+    {% endfor %}
+
+    <a href="{% url 'examiner_dashboard' %}" class="back-btn">
+        Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

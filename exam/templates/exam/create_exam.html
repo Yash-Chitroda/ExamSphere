@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Create Exam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        body{
+            margin:0;
+            font-family:"Segoe UI",Tahoma,sans-serif;
+            background:linear-gradient(135deg,#1d2671,#c33764);
+            min-height:86vh;
+        }
+
+        .container{
+            max-width:600px;
+            margin:100px auto;
+            background:#fff;
+            padding:30px;
+            border-radius:14px;
+            box-shadow:0 12px 30px rgba(0,0,0,0.25);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        h2{
+            color:#1d2671;
+        }
+
+        .back-btn {
+            padding: 10px 18px;
+            background: #1d2671;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        input,select{
+            width:100%;
+            padding:10px;
+            margin:10px 0;
+            border-radius:6px;
+            border:1px solid #ccc;
+        }
+        input{
+            width: 96%;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            font-weight:bold;
+            background:linear-gradient(135deg,#1d2671,#c33764);
+            color:#fff;
+            border:none;
+            border-radius:8px;
+        }
+
+        .title-banner{
+            position:absolute;
+            top:30px;
+            width:100%;
+            text-align:center;
+            font-family:'Orbitron', sans-serif;
+        }
+
+        .title-banner span{
+            display:inline-block;
+            font-size:20px;
+            font-weight:700;
+            letter-spacing:2px;
+            opacity:0;
+        }
+
+        /* EXAMSPHERE */
+
+        .title-exam{
+            background: linear-gradient(45deg,#ffffff,#9be7ff);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideLeft 1.2s ease forwards;
+        }
+
+        /* SMARTEXAM */
+
+        .title-smart{
+            background: linear-gradient(45deg,#ffd700,#ff9800);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            margin:0 8px;
+            animation: slideTop 1.2s ease forwards;
+        }
+
+        /* CLOUD SYSTEM */
+
+        .title-cloud{
+            background: linear-gradient(45deg,#00e5ff,#00bcd4);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideRight 1.2s ease forwards;
+        }
+
+        /* UNDERLINE */
+
+        .title-underline{
+            width:0;
+            height:4px;
+            margin:12px auto;
+            background:linear-gradient(90deg,#00e5ff,#c33764,#ffd700);
+            border-radius:10px;
+            animation: underlineGrow 1.6s ease forwards;
+        }
+
+        /* ANIMATIONS */
+
+        @keyframes slideLeft{
+            from{
+                transform:translateX(-500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideRight{
+            from{
+                transform:translateX(500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideTop{
+            from{
+                transform:translateY(-200px);
+                opacity:0;
+            }
+            to{
+                transform:translateY(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes underlineGrow{
+            from{
+                width:0;
+                opacity:0;
+            }
+            to{
+                width:420px;
+                opacity:1;
+            }
+        }
+
+    </style>
+</head>
+
+    <body>
+        <div class="title-banner">
+            <span class="title-exam">
+                CloudBased
+            </span>
+            <span class="title-smart">
+            - Online Examination -
+            </span>
+            <span class="title-cloud">
+                System
+            </span>
+            <div class="title-underline"></div>
+        </div>
+        <div class="container">
+
+            <div class="header">
+                <h2>Create New Exam</h2>
+                <a href="{% url 'examiner_dashboard' %}" class="back-btn">
+                    Back to Dashboard
+                </a>
+            </div>
+            {% if success %}
+                <p style="color:green;">{{ success }}</p>
+            {% endif %}
+            {% if error %}
+                <p style="color:red;">{{ error }}</p>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <label>Domain</label>
+                <select name="domain" id="domain" required>
+                    <option>Select</option>
+                    {% for d in domains %}
+                        <option value="{{ d.id }}">{{ d.name }}</option>
+                    {% endfor %}
+                </select>
+                <p id="question-count" style="color: gray; font-weight: bold;"></p>
+                <label>Exam Type</label>
+                <select name="exam_type" id="exam_type" onchange="updateDuration(); fetchQuestionCount();">
+                    <option value="MCQ">MCQ</option>
+                    <option value="DESCRIPTIVE">Descriptive</option>
+                </select>
+                <label>Total Questions</label>
+                <input type="number" id="total_questions" name="total_questions" min="1" required oninput="updateDuration(); fetchQuestionCount();">
+                <label>Duration (minutes)</label>
+                <input type="number" name="duration" min="1" required>
+                <button type="submit">Create Exam</button>
+            </form>
+        </div>
+        <script>
+            function updateDuration() {
+                const type = document.getElementById("exam_type").value;
+                const questions = parseInt(document.getElementById("total_questions").value) || 0;
+                const durationField = document.getElementById("duration");
+
+                if (type === "MCQ") {
+                    durationField.value = questions;
+                } else if (type === "DESCRIPTIVE") {
+                    durationField.value = questions * 3;
+                }
+            }
+
+            function fetchQuestionCount() {
+                const domain = document.getElementById("domain").value;
+                const examType = document.getElementById("exam_type").value;
+
+                if (!domain || !examType) return;
+
+                fetch(`/get-questions-count/?domain_id=${domain}&exam_type=${examType}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById("question-count").innerText =
+                            "Available questions: " + data.count;
+                    });
+            }
+            // 🔥 Trigger on page load + domain change
+            document.getElementById("domain").addEventListener("change", fetchQuestionCount);
+            document.getElementById("exam_type").addEventListener("change", fetchQuestionCount);
+        </script>
+    </body>
+</html>

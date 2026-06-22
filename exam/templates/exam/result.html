@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ExamSphere</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-container {
+            background: #ffffff;
+            max-width: 500px;
+            width: 90%;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            text-align: center;
+        }
+
+        .result-container h2 {
+            margin-top: 0;
+            color: #1d2671;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            margin: 25px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffffff;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+        }
+
+        .result-info {
+            font-size: 16px;
+            color: #555;
+            margin: 15px 0;
+        }
+
+        .action-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 22px;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .title-banner{
+            position:absolute;
+            top:60px;
+            width:100%;
+            text-align:center;
+            font-family:'Orbitron', sans-serif;
+        }
+
+        .title-banner span{
+            display:inline-block;
+            font-size:42px;
+            font-weight:700;
+            letter-spacing:2px;
+            opacity:0;
+        }
+
+        /* EXAMSPHERE */
+
+        .title-exam{
+            background: linear-gradient(45deg,#ffffff,#9be7ff);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideLeft 1.2s ease forwards;
+        }
+
+        /* SMARTEXAM */
+
+        .title-smart{
+            background: linear-gradient(45deg,#ffd700,#ff9800);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            margin:0 8px;
+            animation: slideTop 1.2s ease forwards;
+        }
+
+        /* CLOUD SYSTEM */
+
+        .title-cloud{
+            background: linear-gradient(45deg,#00e5ff,#00bcd4);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideRight 1.2s ease forwards;
+        }
+
+        /* UNDERLINE */
+
+        .title-underline{
+            width:0;
+            height:4px;
+            margin:12px auto;
+            background:linear-gradient(90deg,#00e5ff,#c33764,#ffd700);
+            border-radius:10px;
+            animation: underlineGrow 1.6s ease forwards;
+        }
+
+        /* ANIMATIONS */
+
+        @keyframes slideLeft{
+            from{
+                transform:translateX(-500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideRight{
+            from{
+                transform:translateX(500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideTop{
+            from{
+                transform:translateY(-200px);
+                opacity:0;
+            }
+            to{
+                transform:translateY(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes underlineGrow{
+            from{
+                width:0;
+                opacity:0;
+            }
+            to{
+                width:420px;
+                opacity:1;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="title-banner">
+    <span class="title-exam">
+        CloudBased
+    </span>
+    <span class="title-smart">
+       - Online Examination -
+    </span>
+    <span class="title-cloud">
+        System
+    </span>
+    <div class="title-underline"></div>
+</div>
+<div class="result-container">
+    <h2>Exam Result</h2>
+    <p>{{ exam.domain.name }} Examination</p>
+
+    <div class="score-circle">
+        {{ score }} / {{ total }}
+    </div>
+
+    <div class="result-info">
+        Total Questions: <b>{{ total }}</b><br>
+        Correct Answers: <b>{{ score }}</b>
+    </div>
+
+    <a href="{% url 'student_dashboard' %}" class="action-btn">
+        Back to Dashboard
+    </a>
+</div>
+
+</body>
+</html>

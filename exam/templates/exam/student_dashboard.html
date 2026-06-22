@@ -1,0 +1,332 @@
+{% load custom_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CBOES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1000px;
+            margin: 100px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .dashboard-header h2 {
+            margin: 0;
+            color: #1d2671;
+        }
+
+        .logout-btn {
+            padding: 8px 14px;
+            background: #c33764;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.9;
+        }
+
+        .exam-list {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .exam-card {
+            background: #f8f9fc;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 6px solid #1d2671;
+            transition: 0.3s;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .exam-card h3 {
+            margin-top: 0;
+            color: #1d2671;
+        }
+
+        .exam-info {
+            font-size: 14px;
+            color: #555;
+            margin: 10px 0;
+        }
+
+        .start-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .no-exam {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+            font-size: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-container {
+                margin: 15px;
+                padding: 20px;
+            }
+        }
+
+        .title-banner{
+            position:absolute;
+            top:30px;
+            width:100%;
+            text-align:center;
+            font-family:'Orbitron', sans-serif;
+        }
+
+        .title-banner span{
+            display:inline-block;
+            font-size:20px;
+            font-weight:700;
+            letter-spacing:2px;
+            opacity:0;
+        }
+
+        /* EXAMSPHERE */
+
+        .title-exam{
+            background: linear-gradient(45deg,#ffffff,#9be7ff);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideLeft 1.2s ease forwards;
+        }
+
+        /* SMARTEXAM */
+
+        .title-smart{
+            background: linear-gradient(45deg,#ffd700,#ff9800);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            margin:0 8px;
+            animation: slideTop 1.2s ease forwards;
+        }
+
+        /* CLOUD SYSTEM */
+
+        .title-cloud{
+            background: linear-gradient(45deg,#00e5ff,#00bcd4);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideRight 1.2s ease forwards;
+        }
+
+        /* UNDERLINE */
+
+        .title-underline{
+            width:0;
+            height:4px;
+            margin:12px auto;
+            background:linear-gradient(90deg,#00e5ff,#c33764,#ffd700);
+            border-radius:10px;
+            animation: underlineGrow 1.6s ease forwards;
+        }
+
+        /* ANIMATIONS */
+
+        @keyframes slideLeft{
+            from{
+                transform:translateX(-500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideRight{
+            from{
+                transform:translateX(500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideTop{
+            from{
+                transform:translateY(-200px);
+                opacity:0;
+            }
+            to{
+                transform:translateY(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes underlineGrow{
+            from{
+                width:0;
+                opacity:0;
+            }
+            to{
+                width:420px;
+                opacity:1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title-banner">
+        <span class="title-exam">
+            CloudBased
+        </span>
+        <span class="title-smart">
+        - Online Examination -
+        </span>
+        <span class="title-cloud">
+            System
+        </span>
+        <div class="title-underline"></div>
+    </div>
+
+    <div class="dashboard-container">
+
+        <div class="dashboard-header">
+            <h2>Student Dashboard</h2>
+            <a href="{% url 'login' %}" class="logout-btn">Logout</a>
+        </div>
+
+        <!-- 🔹 MCQ EXAMS -->
+        <h3 style="margin-top:20px;">MCQ Exams</h3>
+
+        {% if mcq_exams %}
+            <div class="exam-list">
+                {% for exam in mcq_exams %}
+                    <div class="exam-card">
+                        <h3>{{ exam.domain.name }} MCQ</h3>
+
+                        <div class="exam-info">
+                            📄 Questions: {{ exam.total_questions }} <br>
+                            ⏱ Duration: {{ exam.duration }} minutes
+                        </div>
+
+                        {% if exam.id in attempted_exam_ids %}
+                            <p style="color: green; font-weight: bold;">
+                                ✔ Attempted
+                            </p>
+
+                        {% with result=result_map|get_item:exam.id %}
+                            {% if result %}
+                                <p style="color:#1d2671; font-weight:bold;">
+                                    Score: {{ result.score }} / {{ result.total_questions }}
+                                </p>
+                            {% endif %}
+                        {% endwith %}
+
+                        {% else %}
+                            <a href="{% url 'start_exam' exam.id %}" class="start-btn">
+                                Start Exam
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-exam">
+                🚫 No MCQ exams available.
+            </div>
+        {% endif %}
+
+
+        <!-- 🔹 DESCRIPTIVE EXAMS -->
+        <h3 style="margin-top:30px;">Descriptive Exams</h3>
+
+        {% if descriptive_exams %}
+            <div class="exam-list">
+                {% for exam in descriptive_exams %}
+                    <div class="exam-card">
+                        <h3>{{ exam.domain.name }} Descriptive</h3>
+
+                        <div class="exam-info">
+                            📄 Questions: {{ exam.total_questions }} <br>
+                            ⏱ Duration: {{ exam.duration }} minutes
+                        </div>
+
+                        {% if exam.id in attempted_exam_ids %}
+                            <p style="color: green; font-weight: bold;">
+                                ✔ Attempted
+                            </p>
+
+                            {% with result=result_map|get_item:exam.id %}
+                                {% if result %}
+                                    {% if result.score > 0 %}
+                                        <p style="color:#1d2671; font-weight:bold;">
+                                            Score: {{ result.score }} / {{ result.total_questions }}
+                                        </p>
+                                    {% else %}
+                                        <p style="color: orange; font-weight: bold;">
+                                            ⏳ Result Pending (Waiting for evaluation)
+                                        </p>
+                                    {% endif %}
+                                {% endif %}
+                            {% endwith %}
+
+                        {% else %}
+                            <a href="{% url 'start_descriptive_exam' exam.id %}" class="start-btn">
+                                Start Exam
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-exam">
+                🚫 No descriptive exams available.
+            </div>
+        {% endif %}
+
+    </div>
+</body>
+</html>

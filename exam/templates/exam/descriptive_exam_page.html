@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CBOES {{ exam.domain.name }} – Descriptive Exam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 100px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        }
+
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: #1d2671;
+            margin: 0;
+        }
+
+        .timer-box {
+            background: #f8f9fc;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #c33764;
+        }
+
+        .question-box {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fc;
+            border-left: 6px solid #1d2671;
+            border-radius: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 17px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .title-banner{
+            position:absolute;
+            top:30px;
+            width:100%;
+            text-align:center;
+            font-family:'Orbitron', sans-serif;
+        }
+
+        .title-banner span{
+            display:inline-block;
+            font-size:20px;
+            font-weight:700;
+            letter-spacing:2px;
+            opacity:0;
+        }
+
+        /* EXAMSPHERE */
+
+        .title-exam{
+            background: linear-gradient(45deg,#ffffff,#9be7ff);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideLeft 1.2s ease forwards;
+        }
+
+        /* SMARTEXAM */
+
+        .title-smart{
+            background: linear-gradient(45deg,#ffd700,#ff9800);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            margin:0 8px;
+            animation: slideTop 1.2s ease forwards;
+        }
+
+        /* CLOUD SYSTEM */
+
+        .title-cloud{
+            background: linear-gradient(45deg,#00e5ff,#00bcd4);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideRight 1.2s ease forwards;
+        }
+
+        /* UNDERLINE */
+
+        .title-underline{
+            width:0;
+            height:4px;
+            margin:12px auto;
+            background:linear-gradient(90deg,#00e5ff,#c33764,#ffd700);
+            border-radius:10px;
+            animation: underlineGrow 1.6s ease forwards;
+        }
+
+        /* ANIMATIONS */
+
+        @keyframes slideLeft{
+            from{
+                transform:translateX(-500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideRight{
+            from{
+                transform:translateX(500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideTop{
+            from{
+                transform:translateY(-200px);
+                opacity:0;
+            }
+            to{
+                transform:translateY(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes underlineGrow{
+            from{
+                width:0;
+                opacity:0;
+            }
+            to{
+                width:420px;
+                opacity:1;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="title-banner">
+    <span class="title-exam">
+        CloudBased
+    </span>
+    <span class="title-smart">
+       - Online Examination -
+    </span>
+    <span class="title-cloud">
+        System
+    </span>
+    <div class="title-underline"></div>
+</div>
+<div class="container">
+
+    <div class="exam-header">
+        <h2>{{ exam.domain.name }} – Descriptive Examination</h2>
+        <div class="timer-box">
+            ⏱ Time Left: <span id="timer"></span>
+        </div>
+    </div>
+
+    <form method="post"
+          action="{% url 'submit_descriptive_exam' exam.id %}"
+          id="descriptiveExamForm">
+        {% csrf_token %}
+
+        {% for q in questions %}
+            <div class="question-box">
+                <p><b>Q{{ forloop.counter }}. {{ q.question_text }}</b></p>
+                <textarea name="question_{{ q.id }}" ></textarea>
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="submit-btn">
+            Submit Exam
+        </button>
+    </form>
+
+</div>
+
+<!-- ✅ SAFE DATA TRANSFER FROM DJANGO TO JS -->
+{{ exam.duration|json_script:"examDuration" }}
+
+<script>
+    // Read duration safely from Django
+    const duration = JSON.parse(
+        document.getElementById("examDuration").textContent
+    );
+
+    let timeLeft = duration * 60;
+
+    const timerDisplay = document.getElementById("timer");
+    const examForm = document.getElementById("descriptiveExamForm");
+
+    function startTimer() {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+
+        timerDisplay.textContent =
+            minutes.toString().padStart(2, '0') + ":" +
+            seconds.toString().padStart(2, '0');
+
+        if (timeLeft <= 0) {
+            alert("Time is up! Your exam will be submitted automatically.");
+            examForm.submit();
+        } else {
+            timeLeft--;
+            setTimeout(startTimer, 1000);
+        }
+    }
+
+    startTimer();
+</script>
+
+</body>
+</html>

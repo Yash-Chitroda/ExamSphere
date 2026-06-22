@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CBOES {{ exam.domain.name }} Exam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            min-height: 100vh;
+        }
+
+        .exam-container {
+            max-width: 900px;
+            margin: 100px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .exam-header h2 {
+            margin: 0;
+            color: #1d2671;
+        }
+
+        .timer-box {
+            background: #f8f9fc;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #c33764;
+        }
+
+        .question-card {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f8f9fc;
+            border-left: 6px solid #1d2671;
+        }
+
+        .question-card p {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .options label {
+            display: block;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .options label:hover {
+            background: #eef1ff;
+            border-color: #1d2671;
+        }
+
+        .submit-section {
+            position: sticky;
+            bottom: 0;
+            background: #ffffff;
+            padding-top: 20px;
+            margin-top: 30px;
+            border-top: 2px solid #eee;
+            text-align: center;
+        }
+
+        .submit-btn {
+            width: 100%;
+            max-width: 300px;
+            padding: 14px;
+            font-size: 17px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .title-banner{
+            position:absolute;
+            top:30px;
+            width:100%;
+            text-align:center;
+            font-family:'Orbitron', sans-serif;
+        }
+
+        .title-banner span{
+            display:inline-block;
+            font-size:20px;
+            font-weight:700;
+            letter-spacing:2px;
+            opacity:0;
+        }
+
+        /* EXAMSPHERE */
+
+        .title-exam{
+            background: linear-gradient(45deg,#ffffff,#9be7ff);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideLeft 1.2s ease forwards;
+        }
+
+        /* SMARTEXAM */
+
+        .title-smart{
+            background: linear-gradient(45deg,#ffd700,#ff9800);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            margin:0 8px;
+            animation: slideTop 1.2s ease forwards;
+        }
+
+        /* CLOUD SYSTEM */
+
+        .title-cloud{
+            background: linear-gradient(45deg,#00e5ff,#00bcd4);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideRight 1.2s ease forwards;
+        }
+
+        /* UNDERLINE */
+
+        .title-underline{
+            width:0;
+            height:4px;
+            margin:12px auto;
+            background:linear-gradient(90deg,#00e5ff,#c33764,#ffd700);
+            border-radius:10px;
+            animation: underlineGrow 1.6s ease forwards;
+        }
+
+        /* ANIMATIONS */
+
+        @keyframes slideLeft{
+            from{
+                transform:translateX(-500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideRight{
+            from{
+                transform:translateX(500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideTop{
+            from{
+                transform:translateY(-200px);
+                opacity:0;
+            }
+            to{
+                transform:translateY(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes underlineGrow{
+            from{
+                width:0;
+                opacity:0;
+            }
+            to{
+                width:420px;
+                opacity:1;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="title-banner">
+    <span class="title-exam">
+        CloudBased
+    </span>
+    <span class="title-smart">
+       - Online Examination -
+    </span>
+    <span class="title-cloud">
+        System
+    </span>
+    <div class="title-underline"></div>
+</div>
+<div class="exam-container">
+
+    <div class="exam-header">
+        <h2>{{ exam.domain.name }} Examination</h2>
+        <div class="timer-box">
+            ⏱ Time Left: <span id="timer" data-duration="{{ exam.duration }}"></span>
+        </div>
+    </div>
+
+    <form method="post" action="{% url 'submit_exam' exam.id %}" id="examForm">
+        {% csrf_token %}
+
+        {% for q in questions %}
+            <div class="question-card">
+                <p>Q{{ forloop.counter }}. {{ q.question_text }}</p>
+                <div class="options">
+                    <label><input type="radio" name="{{ q.id }}" value="1"> {{ q.option1 }}</label>
+                    <label><input type="radio" name="{{ q.id }}" value="2"> {{ q.option2 }}</label>
+                    <label><input type="radio" name="{{ q.id }}" value="3"> {{ q.option3 }}</label>
+                    <label><input type="radio" name="{{ q.id }}" value="4"> {{ q.option4 }}</label>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="submit-section">
+            <button type="submit" class="submit-btn">Submit Exam</button>
+        </div>
+    </form>
+
+</div>
+
+<script>
+    const timerElement = document.getElementById("timer");
+    let timeLeft = parseInt(timerElement.dataset.duration) * 60;
+
+
+    const timerDisplay = document.getElementById("timer");
+    const examForm = document.getElementById("examForm");
+
+    function startTimer() {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+
+        timerDisplay.textContent =
+            minutes.toString().padStart(2, '0') + ":" +
+            seconds.toString().padStart(2, '0');
+
+        if (timeLeft <= 0) {
+            alert("Time is up! Your exam will be submitted automatically.");
+            examForm.submit();
+        } else {
+            timeLeft--;
+            setTimeout(startTimer, 1000);
+        }
+    }
+
+    startTimer();
+</script>
+
+<script>
+    let examSubmitted = false;
+
+    window.addEventListener("beforeunload", function (e) {
+        if (!examSubmitted) {
+            const message = "You cannot refresh the page. Doing so will be considered as exam submission.";
+            e.preventDefault();
+            e.returnValue = message;
+            return message;
+        }
+    });
+
+    document.addEventListener("visibilitychange", function () {
+        if (document.hidden && !examSubmitted) {
+            examSubmitted = true;
+            document.getElementById("examForm").submit();
+        }
+    });
+
+    // NORMAL SUBMIT
+    document.getElementById("examForm").addEventListener("submit", function () {
+        examSubmitted = true;
+    });
+</script>
+
+
+<div id="tabWarning" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+">
+    <div style="
+        background:#fff;
+        padding:25px;
+        border-radius:10px;
+        text-align:center;
+        max-width:400px;
+    ">
+        <h3 style="color:#c33764;">Exam Policy Warning</h3>
+        <p>
+            You are not allowed to open a new tab or leave the exam page.<br>
+            This attempt will be submitted automatically.
+        </p>
+        <p>
+            Submitting in <b><span id="countdown">5</span></b> seconds...
+        </p>
+        <button onclick="cancelAutoSubmit()" style="
+            padding:8px 14px;
+            background:#1d2671;
+            color:#fff;
+            border:none;
+            border-radius:6px;
+            cursor:pointer;
+        ">
+            Return to Exam
+        </button>
+    </div>
+</div>
+
+</body>
+</html>

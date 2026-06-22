@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CBOES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 100px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        }
+
+        h2 {
+            color: #1d2671;
+            margin-top: 0;
+        }
+
+        .meta {
+            margin-bottom: 25px;
+            color: #555;
+        }
+
+        .question-box {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fc;
+            border-left: 6px solid #1d2671;
+            border-radius: 8px;
+        }
+
+        .answer-box {
+            margin-top: 10px;
+            padding: 12px;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            color: #333;
+            white-space: pre-wrap;
+        }
+
+        .marks {
+            margin-top: 12px;
+        }
+
+        .marks input {
+            width: 80px;
+            padding: 6px;
+            font-size: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            font-size: 17px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 18px;
+            background: #6f42c1;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .title-banner{
+            position:absolute;
+            top:30px;
+            width:100%;
+            text-align:center;
+            font-family:'Orbitron', sans-serif;
+        }
+
+        .title-banner span{
+            display:inline-block;
+            font-size:20px;
+            font-weight:700;
+            letter-spacing:2px;
+            opacity:0;
+        }
+
+        /* EXAMSPHERE */
+
+        .title-exam{
+            background: linear-gradient(45deg,#ffffff,#9be7ff);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideLeft 1.2s ease forwards;
+        }
+
+        /* SMARTEXAM */
+
+        .title-smart{
+            background: linear-gradient(45deg,#ffd700,#ff9800);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            margin:0 8px;
+            animation: slideTop 1.2s ease forwards;
+        }
+
+        /* CLOUD SYSTEM */
+
+        .title-cloud{
+            background: linear-gradient(45deg,#00e5ff,#00bcd4);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation: slideRight 1.2s ease forwards;
+        }
+
+        /* UNDERLINE */
+
+        .title-underline{
+            width:0;
+            height:4px;
+            margin:12px auto;
+            background:linear-gradient(90deg,#00e5ff,#c33764,#ffd700);
+            border-radius:10px;
+            animation: underlineGrow 1.6s ease forwards;
+        }
+
+        /* ANIMATIONS */
+
+        @keyframes slideLeft{
+            from{
+                transform:translateX(-500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideRight{
+            from{
+                transform:translateX(500px);
+                opacity:0;
+            }
+            to{
+                transform:translateX(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes slideTop{
+            from{
+                transform:translateY(-200px);
+                opacity:0;
+            }
+            to{
+                transform:translateY(0);
+                opacity:1;
+            }
+        }
+
+        @keyframes underlineGrow{
+            from{
+                width:0;
+                opacity:0;
+            }
+            to{
+                width:420px;
+                opacity:1;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="title-banner">
+    <span class="title-exam">
+        CloudBased
+    </span>
+    <span class="title-smart">
+       - Online Examination -
+    </span>
+    <span class="title-cloud">
+        System
+    </span>
+    <div class="title-underline"></div>
+</div>
+<div class="container">
+
+    <h2>Evaluate Descriptive Exam</h2>
+
+    <div class="meta">
+        <b>Student:</b> {{ result.user.username }} <br>
+        <b>Exam:</b> {{ result.exam.domain.name }} <br>
+        <b>Total Questions:</b> {{ answers|length }}
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% for a in answers %}
+            <div class="question-box">
+                <p><b>Q{{ forloop.counter }}. {{ a.question.question_text }}</b></p>
+
+                <div class="answer-box">
+                    {{ a.answer_text }}
+                </div>
+
+                <div class="marks">
+                    <label>
+                        <b>Marks:</b>
+                        <input type="number"
+                               name="marks_{{ a.id }}"
+                               min="0"
+                               max="10"
+                               step="1"
+                               value="{{ a.marks_awarded|default_if_none:'' }}"
+                               required>
+                    </label>
+                </div>
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="submit-btn">
+            Submit Evaluation
+        </button>
+    </form>
+
+    <a href="{% url 'examiner_descriptive_submissions' %}" class="back-btn">
+        Back to Submissions
+    </a>
+
+</div>
+
+</body>
+</html>
